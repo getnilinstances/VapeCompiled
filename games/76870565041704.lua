@@ -54,8 +54,8 @@ local NoSlowdown = {}
 local Killaura = {}
 local BLOCK = 16
 
--- Attack dispatch shared by the modules: features such as hit select, hit swap
--- and wtap have to see every attack, whether it came from aura, triggerbot or a click.
+
+
 store.attackHooks = {}
 store.attackPostHooks = {}
 store.netHooks = {}
@@ -71,8 +71,8 @@ local function getClient()
 	return scripts and scripts:FindFirstChild('MC')
 end
 
--- The MC engine lives under ReplicatedStorage.MC (shared) and PlayerScripts.MC (client).
--- Both are required before any module touches engine state, so everything waits on this.
+
+
 local function requireModule(folder, name)
 	local module = folder and folder:WaitForChild(name, 30)
 	if not module then return nil end
@@ -134,9 +134,9 @@ end
 run(function()
 	fillEngine()
 
-	-- The engine's MC folder is not always there the instant we inject. Every
-	-- feature reads mc.* at call time, so keep trying instead of leaving them
-	-- bound to nil modules and silently doing nothing.
+	
+	
+	
 	if #missingEngine() == 0 then return end
 
 	task.spawn(function()
@@ -296,8 +296,8 @@ local function installAttackHook()
 	end
 end
 
--- Outgoing payloads go through one wrapper as well, so several modules can
--- rewrite the same packet without fighting over the Net.send reference.
+
+
 local function installNetHook()
 	local net = mc.Net
 	if netHookInstalled or not net or type(net.send) ~= 'function' then return end
@@ -801,8 +801,8 @@ run(function()
 				local part = target.RootPart
 				if not root or not part then return end
 
-				-- Hold the swing back while the target is still outside the reach
-				-- envelope we would actually connect at.
+				
+				
 				local reach = (mc.Controller and mc.Controller.reach) or 3
 				if (part.Position - root.Position).Magnitude > reach * Ratio.Value then
 					return false
@@ -932,8 +932,8 @@ run(function()
 			if not callback then return end
 
 			local hook = function(payload)
-				-- The server drops the shield check when an attack is flagged as a
-				-- swap, which is what an axe hit looks like from its side.
+				
+				
 				if payload.a == 'attack' then
 					if type(payload.st) == 'table' then
 						payload.st.swap = true
@@ -997,7 +997,7 @@ run(function()
 		local eye = getEye()
 		if not camera or not eye or not entitylib.isAlive then return end
 
-		-- The angle slider is the half angle of the cone we are willing to fire into.
+		
 		local look = camera.CFrame.LookVector
 		local limit = math.cos(math.rad(Angle.Value))
 		local best, bestScore
@@ -1039,7 +1039,7 @@ run(function()
 		local tick = config and config.TICK
 		local gravity = config and config.GRAVITY
 
-		-- Compensate the arc the projectile falls through over its flight time.
+		
 		if tick and gravity and tick > 0 then
 			local ticks = ((position - eye).Magnitude / speed) / tick
 			position = position + Vector3.new(0, 0.5 * gravity * ticks * ticks, 0)
@@ -1478,8 +1478,8 @@ run(function()
 				if not using or type(using.start) ~= 'number' then return end
 				if using.kind ~= 'eat' and using.kind ~= 'drink' then return end
 
-				-- using.start counts engine ticks, so pulling it back by the frame
-				-- delta advances the consume timer at the chosen rate.
+				
+				
 				using.start = using.start - (Speed.Value - 1) * delta * 20
 			end))
 		end,
